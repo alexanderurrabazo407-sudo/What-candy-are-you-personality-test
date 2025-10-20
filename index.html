@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>What Candy Are You?</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #ffb6c1, #ffd700);
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 2em;
+    }
+    .hidden {
+      display: none;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background: #ff69b4;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ff1493;
+    }
+    img {
+      max-width: 200px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="start-screen">
+    <h1>🍬 What Candy Are You? 🍭</h1>
+    <p>Take this sweet quiz to discover your candy personality!</p>
+    <button onclick="startQuiz()">Start</button>
+  </div>
+
+  <div class="container hidden" id="question-screen">
+    <h2 id="question-text"></h2>
+    <div id="answers"></div>
+  </div>
+
+  <div class="container hidden" id="result-screen">
+    <h2 id="result-title"></h2>
+    <img id="result-img" alt="Candy result">
+    <p id="result-description"></p>
+    <button onclick="restartQuiz()">Try Again</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "Pick a weekend activity:",
+        answers: [
+          { text: "Reading a book", candy: "Chocolate" },
+          { text: "Going to a party", candy: "Lollipop" },
+          { text: "Theme park adventure", candy: "Gummy Bears" },
+          { text: "Hanging out with friends", candy: "Snickers" }
+        ]
+      },
+      {
+        text: "Pick a color:",
+        answers: [
+          { text: "Brown", candy: "Chocolate" },
+          { text: "Pink", candy: "Cotton Candy" },
+          { text: "Rainbow", candy: "Gummy Bears" },
+          { text: "Gold", candy: "Snickers" }
+        ]
+      },
+      {
+        text: "Choose a vibe:",
+        answers: [
+          { text: "Cozy", candy: "Chocolate" },
+          { text: "Cheerful", candy: "Lollipop" },
+          { text: "Playful", candy: "Gummy Bears" },
+          { text: "Dreamy", candy: "Cotton Candy" }
+        ]
+      }
+    ];
+
+    const results = {
+      Chocolate: {
+        title: "🍫 You are Chocolate!",
+        description: "Classic, comforting, and loved by everyone. You bring warmth and sweetness wherever you go.",
+        img: "https://upload.wikimedia.org/wikipedia/commons/7/70/Milk_Chocolate.jpg"
+      },
+      "Gummy Bears": {
+        title: "🐻 You are Gummy Bears!",
+        description: "Colorful, playful, and always up for fun. You bring joy to any situation!",
+        img: "https://upload.wikimedia.org/wikipedia/commons/3/36/Gummy-bears.jpg"
+      },
+      Lollipop: {
+        title: "🍭 You are a Lollipop!",
+        description: "Bright, cheerful, and full of energy. You light up every room you enter.",
+        img: "https://upload.wikimedia.org/wikipedia/commons/2/29/Lollipop_Rainbow.jpg"
+      },
+      Snickers: {
+        title: "🍫🍪 You are a Snickers!",
+        description: "Fun, practical, and always prepared. You’re a mix of sweet and nutty — in the best way!",
+        img: "https://upload.wikimedia.org/wikipedia/commons/0/02/Snickers-broken.jpg"
+      },
+      "Cotton Candy": {
+        title: "🍭 You are Cotton Candy!",
+        description: "Soft, whimsical, and a little dreamy. You float through life with a lighthearted spirit.",
+        img: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Cotton_candy.jpg"
+      }
+    };
+
+    let currentQuestion = 0;
+    let scores = {};
+
+    function startQuiz() {
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('question-screen').classList.remove('hidden');
+      currentQuestion = 0;
+      scores = {};
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('question-text').textContent = q.text;
+      const answersDiv = document.getElementById('answers');
+      answersDiv.innerHTML = "";
+      q.answers.forEach(a => {
+        const btn = document.createElement('button');
+        btn.textContent = a.text;
+        btn.onclick = () => selectAnswer(a.candy);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(candy) {
+      scores[candy] = (scores[candy] || 0) + 1;
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      const topCandy = Object.keys(scores).reduce((a,b) => scores[a] > scores[b] ? a : b);
+      const result = results[topCandy];
+      document.getElementById('question-screen').classList.add('hidden');
+      document.getElementById('result-screen').classList.remove('hidden');
+      document.getElementById('result-title').textContent = result.title;
+      document.getElementById('result-description').textContent = result.description;
+      document.getElementById('result-img').src = result.img;
+    }
+
+    function restartQuiz() {
+      document.getElementById('result-screen').classList.add('hidden');
+      document.getElementById('start-screen').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
